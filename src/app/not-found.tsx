@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <main className="container" style={{ paddingBlock: 90, textAlign: "center" }}><p className="eyebrow">A little detour</p><h1 className="serif" style={{ fontSize: 44, fontWeight: 400 }}>We couldn’t find that page.</h1><p style={{ color: "var(--muted)" }}>It may have moved, or the listing may no longer be published.</p><Link className="btn" href="/apartments">Explore homes</Link></main>; }
