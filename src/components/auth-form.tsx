@@ -26,7 +26,8 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" | "forgot" | "r
         if (!values.password || !values.email) throw new Error("Enter your email and password.");
         const { error: authError } = await supabase.auth.signInWithPassword({ email: values.email, password: values.password });
         if (authError) throw authError;
-        router.push(params.get("next") || "/dashboard"); router.refresh();
+        const next = params.get("next");
+        router.push(next && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard"); router.refresh();
       } else if (mode === "sign-up") {
         if (!values.password || !values.email) throw new Error("Enter your email and password.");
         const { error: authError } = await supabase.auth.signUp({ email: values.email, password: values.password, options: { data: { full_name: values.fullName }, emailRedirectTo: `${location.origin}/auth/callback` } });

@@ -14,7 +14,7 @@ Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000. Public sample pages and maps can run without Supabase. Authentication, profile, favorites, inquiries, and contact persistence require project configuration. Type and lint checks are `npm run typecheck` and `npm run lint`; production output is `npm run build`.
+Open http://localhost:3000. The site requires Supabase configuration and a signed-in account to access its pages; sign-in, sign-up, and password recovery remain available before authentication. Profile pictures are uploaded to the private `avatars` bucket. Type and lint checks are `npm run typecheck` and `npm run lint`; production output is `npm run build`.
 
 ## Supabase setup
 
@@ -22,6 +22,7 @@ Open http://localhost:3000. Public sample pages and maps can run without Supabas
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 2. Apply `supabase/migrations/202610220001_initial_schema.sql` followed by `supabase/migrations/202610240001_osun_location_fields.sql` using the Supabase SQL Editor or Supabase CLI (`supabase db push` after linking the project). The second migration is repeatable and additive: it adds location/coordinate metadata, checks coordinate ranges and pairs, changes the default currency for new records to NGN, and updates only the six known `is_demo = true` sample IDs. It does not rewrite real inventory. It also narrows public listing column grants so private display-address fields are not readable through the public client. Existing published inventory remains governed by the original published-listing RLS policy and trusted `app_metadata.is_admin` management policy.
+   If the initial schema is present but the location migration is pending, apartment pages can still load legacy listings; coordinates and full location metadata require the second migration.
 3. Load or refresh the explicit demo seed with `supabase/seed.sql` in the SQL Editor after both migrations. The upsert only updates rows already marked `is_demo = true`; rows are fictional and not verified or available inventory. Without Supabase, the public app uses the corresponding local fallback in `src/lib/properties.ts`.
 4. The migration creates the private `avatars` bucket, 5 MB maximum file size, JPEG/PNG/WebP MIME restrictions, and policies restricting file operations to an authenticated user's `{auth.uid()}/...` folder. Keep the bucket private. The app saves the object path in `profiles.avatar_url` and presents expiring signed URLs. Never make this bucket public.
 5. Auth profile rows are automatically created by an idempotent trigger. RLS policies scope profile, favorites and inquiry access to the signed-in owner. Apartment changes require the server-managed `app_metadata.is_admin = true` claim; never grant admin status through user-editable metadata. Contact submissions are insert-only for visitors; there is no client read access.

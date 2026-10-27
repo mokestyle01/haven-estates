@@ -37,13 +37,13 @@ export type ApartmentRow = {
   title: string;
   display_location?: string | null;
   city: string;
-  state: string | null;
-  country: string | null;
-  neighborhood: string | null;
+  state?: string | null;
+  country?: string | null;
+  neighborhood?: string | null;
   display_address?: string | null;
-  latitude: number | string | null;
-  longitude: number | string | null;
-  location_precision: "approximate" | "exact";
+  latitude?: number | string | null;
+  longitude?: number | string | null;
+  location_precision?: "approximate" | "exact";
   currency: string;
   price: number | string;
   listing_type: string;
@@ -62,7 +62,7 @@ export type ApartmentRow = {
 export function fromApartmentRow(row: ApartmentRow): Apartment {
   const city = row.city || BRAND.primaryTown;
   const neighborhood = row.neighborhood ?? "";
-  const location = [neighborhood, city, row.state].filter(Boolean).join(", ");
+  const location = row.display_location || [neighborhood, city, row.state].filter(Boolean).join(", ");
   return {
     id: row.id,
     title: row.title,
@@ -72,8 +72,8 @@ export function fromApartmentRow(row: ApartmentRow): Apartment {
     country: row.country ?? "",
     neighborhood,
     displayAddress: row.display_address ?? "",
-    latitude: row.latitude === null ? null : Number(row.latitude),
-    longitude: row.longitude === null ? null : Number(row.longitude),
+    latitude: row.latitude == null ? null : Number(row.latitude),
+    longitude: row.longitude == null ? null : Number(row.longitude),
     locationPrecision: row.location_precision ?? "approximate",
     currency: row.currency || CURRENCY,
     price: Number(row.price),
