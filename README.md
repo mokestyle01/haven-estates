@@ -29,7 +29,7 @@ Open http://localhost:3000. The site requires Supabase configuration and a signe
 
 ### Authentication URLs and email
 
-For the deployed website, set `NEXT_PUBLIC_SUPABASE_URL` and one public key variable (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`) in the hosting provider's production environment settings, then redeploy. Never use a service-role key as the public key. If account deletion is enabled, configure its rotated `SUPABASE_SERVICE_ROLE_KEY` separately as a server-only secret.
+The repository includes `.env.production` with only the public Supabase project URL and publishable key, so standard Next.js production builds can connect without manually copying `.env.local` to the host. Hosting-provider environment variables override these defaults. For a different Supabase project, set `NEXT_PUBLIC_SUPABASE_URL` and one public key variable (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`) in the production environment and redeploy. Never use a service-role key as the public key. If account deletion is enabled, configure `SUPABASE_SERVICE_ROLE_KEY` separately as a server-only secret; do not place it in `.env.production`.
 
 In Supabase **Authentication → URL Configuration**:
 
