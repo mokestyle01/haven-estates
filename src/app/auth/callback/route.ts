@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const next = request.nextUrl.searchParams.get("next") ?? "/dashboard";
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.redirect(new URL("/auth/sign-in?error=configuration", request.url));
   const response = NextResponse.redirect(new URL(safeNext, request.url));
   if (code) {

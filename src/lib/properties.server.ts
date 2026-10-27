@@ -2,7 +2,7 @@ import "server-only";
 import { apartments as demoApartments, APARTMENT_PUBLIC_COLUMNS, fromApartmentRow, type Apartment, type ApartmentRow } from "@/lib/properties";
 import { createClient } from "@/lib/supabase/server";
 
-const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY));
 const LEGACY_APARTMENT_COLUMNS = "id,title,display_location,description,price,currency,listing_type,property_type,city,bedrooms,bathrooms,area,image_urls,amenities,published,is_demo,created_at";
 
 function isMissingLocationColumnError(error: { code?: string; message: string }) {

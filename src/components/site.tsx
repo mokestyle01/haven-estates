@@ -4,7 +4,7 @@ import { BRAND } from "@/lib/brand";
 import { createClient } from "@/lib/supabase/server";
 
 export async function Header() {
-  const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+  const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY));
   let signedIn = false;
   if (configured) {
     const supabase = await createClient();

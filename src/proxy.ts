@@ -5,7 +5,7 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAuthRoute = pathname.startsWith("/auth/");
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) {
     if (isAuthRoute || pathname.startsWith("/api/")) return NextResponse.next({ request });
     return NextResponse.redirect(new URL("/auth/sign-in?error=configuration", request.url));

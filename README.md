@@ -18,9 +18,9 @@ Open http://localhost:3000. The site requires Supabase configuration and a signe
 
 ## Supabase setup
 
-1. Create a Supabase project and copy its **Project URL** and **publishable key** (the anon key is accepted where a publishable key is not available) into `.env.local`:
+1. Create a Supabase project and copy its **Project URL** and **publishable key** (or legacy **anon key**) into `.env.local`:
    - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   - Either `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 2. Apply `supabase/migrations/202610220001_initial_schema.sql` followed by `supabase/migrations/202610240001_osun_location_fields.sql` using the Supabase SQL Editor or Supabase CLI (`supabase db push` after linking the project). The second migration is repeatable and additive: it adds location/coordinate metadata, checks coordinate ranges and pairs, changes the default currency for new records to NGN, and updates only the six known `is_demo = true` sample IDs. It does not rewrite real inventory. It also narrows public listing column grants so private display-address fields are not readable through the public client. Existing published inventory remains governed by the original published-listing RLS policy and trusted `app_metadata.is_admin` management policy.
    If the initial schema is present but the location migration is pending, apartment pages can still load legacy listings; coordinates and full location metadata require the second migration.
 3. Load or refresh the explicit demo seed with `supabase/seed.sql` in the SQL Editor after both migrations. The upsert only updates rows already marked `is_demo = true`; rows are fictional and not verified or available inventory. Without Supabase, the public app uses the corresponding local fallback in `src/lib/properties.ts`.
@@ -29,10 +29,12 @@ Open http://localhost:3000. The site requires Supabase configuration and a signe
 
 ### Authentication URLs and email
 
+For the deployed website, set `NEXT_PUBLIC_SUPABASE_URL` and one public key variable (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`) in the hosting provider's production environment settings, then redeploy. Never use a service-role key as the public key. If account deletion is enabled, configure its rotated `SUPABASE_SERVICE_ROLE_KEY` separately as a server-only secret.
+
 In Supabase **Authentication → URL Configuration**:
 
-- Set Site URL to `http://localhost:3000` for local work (replace with the production origin on deploy).
-- Add Redirect URLs `http://localhost:3000/auth/callback` and `http://localhost:3000/auth/callback?next=/auth/reset-password`; add the equivalent exact HTTPS production URLs.
+- Set Site URL to your production origin (for example, `https://www.example.com`).
+- Add Redirect URLs `http://localhost:3000/auth/callback`, `http://localhost:3000/auth/callback?next=/auth/reset-password`, and the equivalent exact HTTPS production callback URLs for your deployed domain.
 - Configure email verification and password recovery templates to use Supabase's generated confirmation/recovery URL, which returns through the configured redirect.
 - The callback exchanges the one-time auth code for a cookie-backed session. Use HTTPS in production.
 
